@@ -1,14 +1,15 @@
 package test;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import page.BpsSberbankHomePagePF;
-import step.ActionsMainMenuItemStep;
+import page.HomePageBpsSberbankPF;
+import step.MainMenuItemStep;
 
-public class StartTest {
+ class StartTest {
 
     private static WebDriver driver;
 
@@ -19,11 +20,10 @@ public class StartTest {
     }
 
     @Test
-    public void FirstTest() {
-        new BpsSberbankHomePagePF(driver).openPage();
-        new ActionsMainMenuItemStep(driver).clickOnMainMenuItem(driver, "Карты");
-
-
+    void FirstTest() {
+        new HomePageBpsSberbankPF(driver).openPage();
+        new MainMenuItemStep(driver).clickOnMainMenuItem(driver, "Карты");
+        Assertions.assertTrue(driver.getTitle().equalsIgnoreCase("ПС-Сбербанк - Выбрать карту"),"Title isn't correct: ["+driver.getTitle()+"]");
     }
 
 

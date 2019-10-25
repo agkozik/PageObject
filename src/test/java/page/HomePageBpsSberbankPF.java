@@ -9,7 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
-public class BpsSberbankHomePagePF extends AbstractPage {
+public class HomePageBpsSberbankPF extends AbstractPage {
 
     private static final String HOMEPAGE_URL = "https://www.bps-sberbank.by/";
 
@@ -21,7 +21,7 @@ public class BpsSberbankHomePagePF extends AbstractPage {
         return mainMenuItems;
     }
 
-    public BpsSberbankHomePagePF(WebDriver driver) {
+    public HomePageBpsSberbankPF(WebDriver driver) {
         super(driver);
     }
 
