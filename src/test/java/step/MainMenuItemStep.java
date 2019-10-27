@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import page.DropDownMainMenu;
 import page.HomePageBpsSberbankPF;
 
 public class MainMenuItemStep {
@@ -16,13 +17,13 @@ public class MainMenuItemStep {
         homePageBpsSberbankPF = PageFactory.initElements(driver, HomePageBpsSberbankPF.class);
     }
 
-    public void clickOnMainMenuItem(WebDriver driver, String name) {
+    public DropDownMainMenu clickOnMainMenuItem(WebDriver driver, String name) {
 
         for (WebElement element : homePageBpsSberbankPF.getMainMenuItems()) {
             if (element.getText().equalsIgnoreCase(name)) {
                 element.click();
-                new WebDriverWait(driver,5).until(ExpectedConditions.titleIs("БПС-Сбербанк - Выбрать карту"));
-                return;
+                new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.className("nav__item_level-0")));
+                return new DropDownMainMenu(driver);
             }
         }
         throw new RuntimeException("Element with name " + name + " not found");
