@@ -1,8 +1,11 @@
 package page;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SberBankOnline extends AbstractPage {
 
@@ -19,7 +22,9 @@ public class SberBankOnline extends AbstractPage {
 
     @Override
     protected AbstractPage openPage() {
-        return null;
+        driver.get(" https://www.bps-sberbank.by/loginsbol");
+        new WebDriverWait(driver, WAIT_TIMEOUT_SECONDS).until(ExpectedConditions.visibilityOfElementLocated(By.id("app")));
+        return this;
     }
 
 }
