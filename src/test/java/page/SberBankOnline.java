@@ -18,6 +18,8 @@ public class SberBankOnline extends AbstractPage {
 
     public SberBankOnline(WebDriver driver) {
         super(driver);
+        new WebDriverWait(driver, WAIT_TIMEOUT_SECONDS).until(ExpectedConditions.elementToBeClickable(By.className("btn-accent")));
+
     }
 
     @Override
