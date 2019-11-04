@@ -1,18 +1,14 @@
 package page;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.PageFactory;
+public abstract class AbstractPage <E extends AbstractPage> {
 
-public abstract class AbstractPage {
+    public final int WAIT_TIMEOUT_SECONDS = 15;
 
-    protected WebDriver driver;
-    public final int WAIT_TIMEOUT_SECONDS = 10;
+    WebDriverManager driverManager = WebDriverManager.getInstance();
 
-    protected AbstractPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+    public abstract E initPage();
+
+    public WebDriverManager getDriverManager() {
+        return driverManager;
     }
-
-    protected abstract AbstractPage openPage();
-
 }

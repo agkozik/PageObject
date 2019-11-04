@@ -17,9 +17,6 @@ public class ForeignCurrencyDeposit extends AbstractPage {
     @FindBy(className = "DepositesSelectionResult__buttons")
     List<WebElement> buttonMore;
 
-    public ForeignCurrencyDeposit(WebDriver driver) {
-        super(driver);
-    }
 
     public List<WebElement> getSelectDeposit() {
         return selectDeposit;
@@ -30,9 +27,10 @@ public class ForeignCurrencyDeposit extends AbstractPage {
     }
 
     @Override
-    protected AbstractPage openPage() {
-        driver.get("https://www.bps-sberbank.by/page/deposit-foreign-currency");
-        new WebDriverWait(driver, WAIT_TIMEOUT_SECONDS).until(ExpectedConditions.visibilityOfElementLocated(By.id("app")));
+    public AbstractPage initPage() {
+        driverManager.getDriver().get("https://www.bps-sberbank.by/page/deposit-foreign-currency");
+        new WebDriverWait(driverManager.getDriver(), WAIT_TIMEOUT_SECONDS)
+                .until(ExpectedConditions.visibilityOfElementLocated(By.id("app")));
         return this;
     }
 }

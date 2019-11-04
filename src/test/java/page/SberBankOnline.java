@@ -16,16 +16,11 @@ public class SberBankOnline extends AbstractPage {
         return buttonEnterToBank;
     }
 
-    public SberBankOnline(WebDriver driver) {
-        super(driver);
-        new WebDriverWait(driver, WAIT_TIMEOUT_SECONDS).until(ExpectedConditions.elementToBeClickable(By.className("btn-accent")));
-
-    }
-
     @Override
-    protected AbstractPage openPage() {
-        driver.get(" https://www.bps-sberbank.by/loginsbol");
-        new WebDriverWait(driver, WAIT_TIMEOUT_SECONDS).until(ExpectedConditions.visibilityOfElementLocated(By.id("app")));
+    public AbstractPage initPage() {
+        driverManager.getDriver().get(" https://www.bps-sberbank.by/loginsbol");
+        new WebDriverWait(driverManager.getDriver(), WAIT_TIMEOUT_SECONDS)
+                .until(ExpectedConditions.visibilityOfElementLocated(By.id("app")));
         return this;
     }
 

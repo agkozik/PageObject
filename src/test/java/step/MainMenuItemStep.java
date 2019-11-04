@@ -1,29 +1,28 @@
 package step;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import page.DropDownMainMenu;
 import page.HomePageBpsSberbankPF;
 
 public class MainMenuItemStep {
 
     private HomePageBpsSberbankPF homePageBpsSberbankPF;
 
-    public MainMenuItemStep(WebDriver driver) {
-        homePageBpsSberbankPF = PageFactory.initElements(driver, HomePageBpsSberbankPF.class);
+    public MainMenuItemStep() {
+        homePageBpsSberbankPF = new HomePageBpsSberbankPF().initPage();
+
     }
 
-    public DropDownMainMenu clickOnMainMenuItem(WebDriver driver, String name) {
+    public DropDownItemStep clickOnMainMenuItem(String name) {
 
         for (WebElement element : homePageBpsSberbankPF.getMainMenuItems()) {
             if (element.getText().equalsIgnoreCase(name)) {
                 element.click();
-                new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.className("nav__item_level-0")));
-                return new DropDownMainMenu(driver);
+                new WebDriverWait(homePageBpsSberbankPF.getDriverManager().getDriver(), 15)
+                        .until(ExpectedConditions.elementToBeClickable(By.className("nav__item_level-0")));
+                return new DropDownItemStep();
             }
         }
         throw new RuntimeException("Element with name " + name + " not found");

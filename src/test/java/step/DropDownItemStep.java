@@ -1,9 +1,7 @@
 package step;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import page.DropDownMainMenu;
@@ -14,42 +12,45 @@ public class DropDownItemStep {
 
     DropDownMainMenu dropDownMainMenu;
 
-    public DropDownItemStep(WebDriver driver) {
-        dropDownMainMenu = PageFactory.initElements(driver, DropDownMainMenu.class);
+    public DropDownItemStep() {
+        dropDownMainMenu = new DropDownMainMenu().initPage();
     }
 
     public DropDownMainMenu getDropDownMainMenu() {
         return dropDownMainMenu;
     }
 
-    public void setDropDownMainMenu(DropDownMainMenu dropDownMainMenu) {
-        this.dropDownMainMenu = dropDownMainMenu;
-    }
+   public CardStep openCardGroup(String name)
+   {
+       clickOnDropDownMainMenu(name,dropDownMainMenu.getItem1DropDownMainMenu());
+       return new CardStep();
+   }
 
-    public void clickOnDropDownMainMenu(WebDriver driver, String searchItem, List<WebElement> item) {
+   public CardStep openCard(String cardName){
+        clickOnDropDownMainMenu(cardName,dropDownMainMenu.getItem2DropDownMainMenu());
+        return new CardStep();
+   }
+
+   public CardStep openMenuHeader(String header){
+        clickOnDropDownMainMenu(header,dropDownMainMenu.getHeaderDropDownMainMenu());
+        return new CardStep();
+   }
+
+
+    private void clickOnDropDownMainMenu( String searchItem, List<WebElement> item) {
 
         for (WebElement el : item) {
             if (el.getText().equalsIgnoreCase(searchItem)) {
                 el.click();
-                new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.id("app")));
+                new WebDriverWait(dropDownMainMenu.getDriverManager().getDriver(), 5).until(ExpectedConditions.elementToBeClickable(By.id("app")));
                 return;
             }
         }
         throw new RuntimeException("Element with name " + searchItem + " not found");
     }
-
-//
-//    public SberBankOnline clickOnHeaderDropDownMainMenu(WebDriver driver, String header) {
-//        for (WebElement el : dropDownMainMenu.getHeaderDropDownMainMenu()) {
-//            if (el.getText().equalsIgnoreCase(header)) {
-//                el.click();
-//                new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.id("app")));
-//                return new SberBankOnline(driver);
-//            }
-//        }
-//        throw new RuntimeException("Element with name " + header + " not found");
-//    }
-//
-
+    public boolean isOpen()
+    {
+        return dropDownMainMenu.getMenu().isDisplayed();
+    }
 
 }

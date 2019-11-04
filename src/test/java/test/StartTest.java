@@ -5,106 +5,115 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import page.DropDownMainMenu;
-import page.HomePageBpsSberbankPF;
-import page.KeepDeposit;
-import page.SberBankOnline;
-import step.DropDownItemStep;
-import step.MainMenuItemStep;
-import step.StepForeignCurrencyDeposit;
+import page.*;
+import step.*;
+
+import java.awt.*;
 
 class StartTest {
 
-    private static WebDriver driver;
+    private static WebDriverManager webDriverManager = WebDriverManager.getInstance();
 
     @BeforeAll
-    static void browserSetup() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+    public static void moveCursorOut() throws AWTException {
+        Robot bot = new Robot();
+        bot.mouseMove(0, 0);
     }
 
     @Test
     void FirstTest() {
-        new HomePageBpsSberbankPF(driver).openPage();
-        DropDownMainMenu dropDownMainMenu = new MainMenuItemStep(driver).clickOnMainMenuItem(driver, "Карты");
-        Assertions.assertEquals("БПС-Сбербанк - Выбрать карту", driver.getTitle());
-    }
 
-    @Test
-    void authorizationFromMenu() {
-        new HomePageBpsSberbankPF(driver).openPage();
-        DropDownMainMenu dropDownMainMenu = new MainMenuItemStep(driver).clickOnMainMenuItem(driver, "Платежи и переводы");
-        new DropDownItemStep(driver)
-                .clickOnDropDownMainMenu(driver, "Сбербанк Онлайн", dropDownMainMenu.getItem1DropDownMainMenu());
-        new SberBankOnline(driver).getButtonEnterToBank().click();
-        Assertions.assertEquals("БПС-Сбербанк - Интернет банк - Возможности", driver.getTitle());
-
+        DropDownItemStep dropDownItemStep = new MainMenuItemStep().clickOnMainMenuItem("Карты");
+        Assertions.assertTrue(dropDownItemStep.isOpen());
     }
 
     @ParameterizedTest
-    @CsvSource({"Карты", "Депозиты", "Кредиты", "Платежи и переводы", "Страхование и другие услуги", "Ещё"})
-    void clickOnAllMenuItems(String mainMenuItemName) {
-        new HomePageBpsSberbankPF(driver).openPage();
-        new MainMenuItemStep(driver).clickOnMainMenuItem(driver, mainMenuItemName);
-        Assertions.assertNotEquals("БПС-Сбербанк - Главная", driver.getTitle());
+    @CsvSource({
+            "Карты, Премиальные карты, Кобрендинговая карта с ФК БАТЭ",
+            "Карты, Премиальные карты, Visa Rewards PayWave КартаFUN",
+            "Карты, Пенсионные карты, Visa Classic Пенсионная",
+            "Карты, Карты с Money-Back, Mastercard World ComPass в иностранной валюте",
+            "Карты, Бонусные карты, Mastercard Virtual GameCard",
+            "Карты, Виртуальные карты, Visa Virtuon"})
+    void authorizationFromMenu(String mainMenuItem, String cardGroup, String cardName) {
+
+        new MainMenuItemStep()
+                .clickOnMainMenuItem(mainMenuItem)
+                .openCardGroup(cardGroup)
+                .chooseCardAndClickMoreButton(cardName)
+                .clickOrderButton();
+        System.out.println(webDriverManager.getDriver().getTitle());
 
     }
 
-    @ParameterizedTest
-    @CsvFileSource(resources = "/csv_data.csv", numLinesToSkip = 1)
-    void testDropDownMenuHeaderWithCsvFileSource(String menu, String header, String item1, String item2) {
-        new HomePageBpsSberbankPF(driver).openPage();
-        DropDownMainMenu dropDownMainMenu = new MainMenuItemStep(driver).clickOnMainMenuItem(driver, menu);
-        new DropDownItemStep(driver).clickOnDropDownMainMenu(driver, header, dropDownMainMenu.getHeaderDropDownMainMenu());
-        Assertions.assertNotEquals("БПС-Сбербанк - Главная", driver.getTitle());
 
-    }
 
-    @ParameterizedTest
-    @CsvFileSource(resources = "/csv_data.csv", numLinesToSkip = 1)
-    void testDropDownMenuItem1WithCsvFileSource(String menu, String header, String item1, String item2) {
-        new HomePageBpsSberbankPF(driver).openPage();
-        DropDownMainMenu dropDownMainMenu = new MainMenuItemStep(driver).clickOnMainMenuItem(driver, menu);
-        new DropDownItemStep(driver).clickOnDropDownMainMenu(driver, item1, dropDownMainMenu.getItem1DropDownMainMenu());
-        Assertions.assertNotEquals("БПС-Сбербанк - Главная", driver.getTitle());
-
-    }
-
-    @ParameterizedTest
-    @CsvFileSource(resources = "/csv_data.csv", numLinesToSkip = 1)
-    void testDropDownMenuItem2WithCsvFileSource(String menu, String header, String item1, String item2) {
-        new HomePageBpsSberbankPF(driver).openPage();
-        DropDownMainMenu dropDownMainMenu = new MainMenuItemStep(driver).clickOnMainMenuItem(driver, menu);
-        new DropDownItemStep(driver).clickOnDropDownMainMenu(driver, item2, dropDownMainMenu.getItem2DropDownMainMenu());
-        Assertions.assertNotEquals("БПС-Сбербанк - Главная", driver.getTitle());
-
-    }
-
-    @ParameterizedTest
-    @CsvSource({"100, 10000"})
-    void findHowToEarn100USDIfYouHave10000USD(int profit, String sum) {
-        new HomePageBpsSberbankPF(driver).openPage();
-        DropDownMainMenu dropDownMainMenu = new MainMenuItemStep(driver).clickOnMainMenuItem(driver, "Депозиты");
-        new DropDownItemStep(driver).clickOnDropDownMainMenu(driver, "В ИНОСТРАННОЙ ВАЛЮТЕ", dropDownMainMenu.getHeaderDropDownMainMenu());
-        new StepForeignCurrencyDeposit(driver).clickButtonMore(1);
-
-        KeepDeposit keepDeposit = new KeepDeposit(driver);
-        keepDeposit.chooseMenu("ВАЛЮТА");
-        keepDeposit.changeCurrency("USD");
-        keepDeposit.useDepositCalculator(10, "10000");
-        keepDeposit.useDepositCalculatorBinary(10, "10000", 90, 1000);
-
-        System.out.println(driver.getTitle());
-    }
+//
+//    @ParameterizedTest
+//    @CsvSource({"Карты, Пенсионные карты"})
+//            //, "Депозиты", "Кредиты", "Платежи и переводы", "Страхование и другие услуги", "Ещё"})
+//    void clickOnAllMenuItems(String mainMenuItemName, String dropMenuItem) {
+//        new MainMenuItemStep()
+//                .clickOnMainMenuItem(mainMenuItemName)
+//                .openPremiumCard(dropMenuItem)
+//
+//        new HomePageBpsSberbankPF().initPage();
+//        new MainMenuItemStep().clickOnMainMenuItem(driver, mainMenuItemName);
+//        Assertions.assertNotEquals("БПС-Сбербанк - Главная", driver.getTitle());
+//
+//    }
+//
+//    @ParameterizedTest
+//    @CsvFileSource(resources = "/csv_data.csv", numLinesToSkip = 1)
+//    void testDropDownMenuHeaderWithCsvFileSource(String menu, String header, String item1, String item2) {
+//        new HomePageBpsSberbankPF().initPage();
+//        DropDownMainMenu dropDownMainMenu = new MainMenuItemStep().clickOnMainMenuItem(driver, menu);
+//        new DropDownItemStep(driver).clickOnDropDownMainMenu(driver, header, dropDownMainMenu.getHeaderDropDownMainMenu());
+//        Assertions.assertNotEquals("БПС-Сбербанк - Главная", driver.getTitle());
+//
+//    }
+//
+//    @ParameterizedTest
+//    @CsvFileSource(resources = "/csv_data.csv", numLinesToSkip = 1)
+//    void testDropDownMenuItem1WithCsvFileSource(String menu, String header, String item1, String item2) {
+//        new HomePageBpsSberbankPF().initPage();
+//        DropDownMainMenu dropDownMainMenu = new MainMenuItemStep().clickOnMainMenuItem(driver, menu);
+//        new DropDownItemStep(driver).clickOnDropDownMainMenu(driver, item1, dropDownMainMenu.getItem1DropDownMainMenu());
+//        Assertions.assertNotEquals("БПС-Сбербанк - Главная", driver.getTitle());
+//
+//    }
+//
+//    @ParameterizedTest
+//    @CsvFileSource(resources = "/csv_data.csv", numLinesToSkip = 1)
+//    void testDropDownMenuItem2WithCsvFileSource(String menu, String header, String item1, String item2) {
+//        new HomePageBpsSberbankPF().initPage();
+//        DropDownMainMenu dropDownMainMenu = new MainMenuItemStep().clickOnMainMenuItem(driver, menu);
+//        new DropDownItemStep(driver).clickOnDropDownMainMenu(driver, item2, dropDownMainMenu.getItem2DropDownMainMenu());
+//        Assertions.assertNotEquals("БПС-Сбербанк - Главная", driver.getTitle());
+//
+//    }
+//
+//    @ParameterizedTest
+//    @CsvSource({"10, 10000"})
+//    void findHowToEarn100USDIfYouHave10000USD(int profit, String sum) {
+//        new HomePageBpsSberbankPF().initPage();
+//        DropDownMainMenu dropDownMainMenu = new MainMenuItemStep().clickOnMainMenuItem(driver, "Депозиты");
+//        new DropDownItemStep(driver).clickOnDropDownMainMenu(driver, "В ИНОСТРАННОЙ ВАЛЮТЕ", dropDownMainMenu.getHeaderDropDownMainMenu());
+//        new StepForeignCurrencyDeposit(driver).clickButtonMore(1);
+//
+//        new StepKeepDeposit(driver).chooseMenu(driver,"ВАЛЮТА");
+//        new StepKeepDeposit(driver).changeCurrency(driver,"USD");
+//        new StepKeepDeposit(driver).useDepositCalculator(driver,profit,sum);
+//        new StepKeepDeposit(driver).useDepositCalculatorBinary(driver,profit,sum,90,1000);
+//
+//        System.out.println(driver.getTitle());
+//    }
 
 
     @AfterAll
     static void browserClose() {
-        driver.quit();
-        driver = null;
+        webDriverManager.getDriver().quit();
+        webDriverManager = null;
     }
 }
